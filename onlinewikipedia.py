@@ -23,6 +23,7 @@ import matplotlib.pyplot as plt
 import onlineldavb
 import wikirandom
 import printtopics
+import time
 
 def main( batchnumber = 3.3e4 ):
     """
@@ -46,7 +47,8 @@ def main( batchnumber = 3.3e4 ):
     # Our vocabulary
     vocab = file('./dictnostops.txt').readlines()
     W = len(vocab)
-
+    # record time used for training
+    start = time.clock()
     # Initialize the algorithm with alpha=1/K, eta=1/K, tau_0=1024, kappa=0.7
     olda = onlineldavb.OnlineLDA(vocab, K, D, 1./K, 1./K, 1024., 0.7)
     # Run until we've seen D documents. (Feel free to interrupt *much*
@@ -72,6 +74,10 @@ def main( batchnumber = 3.3e4 ):
         if (iteration % 10 == 0):
             numpy.savetxt('lambda-%d.dat' % iteration, olda._lambda)
             numpy.savetxt('gamma-%d.dat' % iteration, olda._gamma)
+    
+    #print time taken
+    end = time.clock()
+    print "time taken for training %f" %end
     #plot perplexity
     plt.plot(range(len(perplexity_plot)), perplexity_plot, 'g')
     plt.xlabel('Number of Iterations')
