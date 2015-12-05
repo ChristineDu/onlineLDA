@@ -185,7 +185,7 @@ class OnlineLDA:
         # the mini-batch
         #gamma = 1*n.random.gamma(100., 1./100., (batchD, self._K))
             
-            for d in range(it*8, it*8 + 8):
+            for d in range(it*64, it*64 + 64):
                 # These are mostly just shorthand (but might help cache locality)
                 ids = self._wordids[d]
                 cts = self._wordcts[d]

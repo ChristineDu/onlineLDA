@@ -96,7 +96,7 @@ class WikiThread(threading.Thread):
         WikiThread.articlenames.extend(articlenamelist)
         WikiThread.lock.release()
 
-def get_random_wikipedia_articles(n):
+def get_random_wikipedia_articles(n ):
     """
     Downloads n articles in parallel from Wikipedia and returns lists
     of their names and contents. Much faster than calling
@@ -118,7 +118,7 @@ def get_random_wikipedia_articles(n):
 if __name__ == '__main__':
     t0 = time.time()
 
-    (articles, articlenames) = get_random_wikipedia_articles(1)
+    (articles, articlenames) = get_random_wikipedia_articles()
     for i in range(0, len(articles)):
         print articlenames[i]
 

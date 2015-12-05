@@ -86,9 +86,9 @@ def main( batchnumber = 3.3e4 ):
     plt.show()
     plt.pause(100)
     # print topics
-    printtopics("dictnostops.txt", "lambda-20.dat")
+    #printtopics("dictnostops.txt", "lambda-20.dat")
 if __name__ == '__main__':
     #printtopics.main("dictnostops.txt", "lambda-10.dat")
-    main(20)
+    main(5)
     
 
