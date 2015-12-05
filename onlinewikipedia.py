@@ -1,3 +1,4 @@
+
 #!/usr/bin/python
 
 # onlinewikipedia.py: Demonstrates the use of online VB for LDA to
@@ -32,7 +33,7 @@ def main( batchnumber = 3.3e4 ):
     """
 
     # The number of documents to analyze each iteration
-    batchsize = 64
+    batchsize = 64*8
     # The total number of documents in Wikipedia
     D = 3.3e6
     # The number of topics
@@ -90,3 +91,4 @@ if __name__ == '__main__':
     #printtopics.main("dictnostops.txt", "lambda-10.dat")
     main(20)
     
+

@@ -70,7 +70,7 @@ def parse_doc_list(docs, vocab):
     parselock = threading.Lock()
     
     def parsethread(parselock, it):
-        for d in range(it*8, it*8+8):
+        for d in range(it*64, it*64+64):
             docs[d] = docs[d].lower()
             docs[d] = re.sub(r'-', ' ', docs[d])
             docs[d] = re.sub(r'[^a-z ]', '', docs[d])
@@ -161,7 +161,7 @@ class OnlineLDA:
         """
         # Initialize the variantions in do_e_step, batchD is 64
         self._sstats = n.zeros(self._lambda.shape)
-        self._gamma = 1*n.random.gamma(100., 1./100., (64, self._K))
+        self._gamma = 1*n.random.gamma(100., 1./100., (64*8, self._K))
         # This is to handle the case where someone just hands us a single
         # document, not in a list.
         if (type(docs).__name__ == 'string'):
@@ -331,3 +331,4 @@ class OnlineLDA:
                               gammaln(n.sum(self._lambda, 1)))
 
         return(score)
+

@@ -85,10 +85,15 @@ class WikiThread(threading.Thread):
     lock = threading.Lock()
 
     def run(self):
-        (article, articlename) = get_random_wikipedia_article()
+        articlelist = list()
+        articlenamelist = list()
+        for i in range(0,64):
+            (article, articlename) = get_random_wikipedia_article()
+            articlelist.append(article)
+            articlenamelist.append(articlename)
         WikiThread.lock.acquire()
-        WikiThread.articles.append(article)
-        WikiThread.articlenames.append(articlename)
+        WikiThread.articles.extend(articlelist)
+        WikiThread.articlenames.extend(articlenamelist)
         WikiThread.lock.release()
 
 def get_random_wikipedia_articles(n):
@@ -101,13 +106,13 @@ def get_random_wikipedia_articles(n):
     WikiThread.articles = list()
     WikiThread.articlenames = list()
     wtlist = list()
-    for i in range(0, n, maxthreads):
-        print 'downloaded %d/%d articles...' % (i, n)
-        for j in range(i, min(i+maxthreads, n)):
-            wtlist.append(WikiThread())
-            wtlist[len(wtlist)-1].start()
-        for j in range(i, min(i+maxthreads, n)):
-            wtlist[j].join()
+
+    for j in range(0, 8):
+        wtlist.append(WikiThread())
+        wtlist[len(wtlist)-1].start()
+    for j in range(0, 8):
+        wtlist[j].join()
+
     return (WikiThread.articles, WikiThread.articlenames)
 
 if __name__ == '__main__':
@@ -119,3 +124,4 @@ if __name__ == '__main__':
 
     t1 = time.time()
     print 'took %f' % (t1 - t0)
+
