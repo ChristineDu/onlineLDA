@@ -26,7 +26,7 @@ import wikirandom
 import printtopics
 import time
 
-def main( batchnumber = 3.3e4 ):
+def main(batchnumber = 3.3e4 ):
     """
     Downloads and analyzes a bunch of random Wikipedia articles using
     online VB for LDA.
