@@ -20,6 +20,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import cPickle, string, numpy, getopt, sys, random, time, re, pprint
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import onlineldavb
 import wikirandom
@@ -83,12 +85,13 @@ def main(batchnumber = 3.3e4 ):
     plt.plot(range(len(perplexity_plot)), perplexity_plot, 'g')
     plt.xlabel('Number of Iterations')
     plt.ylabel('Perplexity')
-    plt.show()
-    plt.pause(100)
+    #plt.show()
+    #plt.pause(100)
+    plt.savefig("perplexity.png")
     # print topics
     #printtopics("dictnostops.txt", "lambda-20.dat")
 if __name__ == '__main__':
     #printtopics.main("dictnostops.txt", "lambda-10.dat")
-    main(5)
+    main(100)
     
 
