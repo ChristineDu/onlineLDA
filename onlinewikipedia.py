@@ -19,6 +19,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import cPickle, string, numpy, getopt, sys, random, time, re, pprint
+import matplotlib
+matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import onlineldavb
 import wikirandom
@@ -71,10 +73,9 @@ def main( batchnumber = 3.3e4 ):
         # over topics, and gamma, the parameters to the variational
         # distributions over topic weights for the articles analyzed in
         # the last iteration.
-        if (iteration % 10 == 0):
-            numpy.savetxt('lambda-%d.dat' % iteration, olda._lambda)
-            numpy.savetxt('gamma-%d.dat' % iteration, olda._gamma)
-    
+        #if (iteration % 10 == 0):
+           #numpy.savetxt('lambda-%d.dat' % iteration, olda._lambda)
+           #numpy.savetxt('gamma-%d.dat' % iteration, olda._gamma)
     #print time taken
     end = time.clock()
     print "time taken for training %f" %end
@@ -82,11 +83,11 @@ def main( batchnumber = 3.3e4 ):
     plt.plot(range(len(perplexity_plot)), perplexity_plot, 'g')
     plt.xlabel('Number of Iterations')
     plt.ylabel('Perplexity')
-    plt.show()
-    plt.pause(100)
+    plt.savefig("perplexity.png")
+    #plt.pause(100)
     # print topics
-    printtopics("dictnostops.txt", "lambda-20.dat")
+    #printtopics("dictnostops.txt", "lambda-20.dat")
 if __name__ == '__main__':
     #printtopics.main("dictnostops.txt", "lambda-10.dat")
-    main(20)
+    main(1600)
     
