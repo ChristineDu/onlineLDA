@@ -75,8 +75,8 @@ def main(batchnumber = 3.3e4 ):
         # distributions over topic weights for the articles analyzed in
         # the last iteration.
         if (iteration % 10 == 0):
-            numpy.savetxt('lambda-%d.dat' % iteration, olda._lambda)
-            numpy.savetxt('gamma-%d.dat' % iteration, olda._gamma)
+            numpy.savetxt('lambda.dat', olda._lambda)
+           #numpy.savetxt('gamma-%d.dat' % iteration, olda._gamma)
     
     #print time taken
     end = time.clock()
@@ -87,11 +87,11 @@ def main(batchnumber = 3.3e4 ):
     plt.ylabel('Perplexity')
     #plt.show()
     #plt.pause(100)
-    plt.savefig("perplexity.png")
+    plt.savefig("perplexity%s.png" % batchnumber)
     # print topics
     #printtopics("dictnostops.txt", "lambda-20.dat")
 if __name__ == '__main__':
     #printtopics.main("dictnostops.txt", "lambda-10.dat")
-    main(100)
+    main(200)
     
 
