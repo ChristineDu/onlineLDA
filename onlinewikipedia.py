@@ -50,12 +50,14 @@ def main( batchnumber = 3.3e4 ):
     vocab = file('./dictnostops.txt').readlines()
     W = len(vocab)
     # record time used for training
-    start = time.clock()
+    start = time.time()
     # Initialize the algorithm with alpha=1/K, eta=1/K, tau_0=1024, kappa=0.7
     olda = onlineldavb.OnlineLDA(vocab, K, D, 1./K, 1./K, 1024., 0.7)
     # Run until we've seen D documents. (Feel free to interrupt *much*
     # sooner than this.)
-    perplexity_plot=list()
+    perplexity_plot = list()
+    perplexity = []
+    time_track = list()
     for iteration in range(1, documentstoanalyze+1):
         # Download some articles
         (docset, articlenames) = \
@@ -65,29 +67,42 @@ def main( batchnumber = 3.3e4 ):
         # Compute an estimate of held-out perplexity
         #(wordids, wordcts) = onlineldavb.parse_doc_list(docset, olda._vocab)
         perwordbound = bound * len(docset) / (D * sum(map(sum, olda._wordcts)))
-        perplexity_plot.append(numpy.exp(-perwordbound))
+        if iteration == 1 :
+            perplexity = numpy.exp(-perwordbound)
+        else :
+            perplexity = min(perplexity, numpy.exp(-perwordbound))
+        perplexity_plot.append(perplexity)
+        time_track.append(time.time()-start)
         print '%d:  rho_t = %f,  held-out perplexity estimate = %f' % \
             (iteration, olda._rhot, numpy.exp(-perwordbound))
+            
+    numpy.savetxt('lambda.dat', olda._lambda)
 
-        # Save lambda, the parameters to the variational distributions
-        # over topics, and gamma, the parameters to the variational
-        # distributions over topic weights for the articles analyzed in
-        # the last iteration.
-        #if (iteration % 10 == 0):
-           #numpy.savetxt('lambda-%d.dat' % iteration, olda._lambda)
-           #numpy.savetxt('gamma-%d.dat' % iteration, olda._gamma)
-    #print time taken
-    end = time.clock()
-    print "time taken for training %f" %end
+    #print time taken, save time to file
+    end = time.time()
+    time_track_file = open("time_track.txt","w")
+    for item in time_track:
+        time_track_file.write("%s\n"% item)
+    time_track_file.close()
+    print "time taken for training %f" % (end-start)
+    print perplexity_plot
     #plot perplexity
+    plt.figure(1)
     plt.plot(range(len(perplexity_plot)), perplexity_plot, 'g')
     plt.xlabel('Number of Iterations')
     plt.ylabel('Perplexity')
-    plt.savefig("perplexity.png")
+    #plt.show()
     #plt.pause(100)
-    # print topics
-    #printtopics("dictnostops.txt", "lambda-20.dat")
+    plt.savefig("perplexity%s.png" % batchnumber)
+
+    plt.figure(2)
+    plt.plot(time_track, perplexity_plot, 'g')
+    plt.xlabel('Time in seconds')
+    plt.ylabel('Perplexity')
+    #plt.show()
+    #plt.pause(100)
+    plt.savefig("time_track%s.png" % batchnumber)
 if __name__ == '__main__':
-    #printtopics.main("dictnostops.txt", "lambda-10.dat")
-    main(1600)
+    #printtopics.main("dictnostops.txt", "lambda.dat")
+    main(7000)
     
