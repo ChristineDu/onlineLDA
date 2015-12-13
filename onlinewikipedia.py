@@ -51,12 +51,13 @@ def main(batchnumber = 3.3e4 ):
     vocab = file('./dictnostops.txt').readlines()
     W = len(vocab)
     # record time used for training
-    start = time.clock()
+    start = time.time()
     # Initialize the algorithm with alpha=1/K, eta=1/K, tau_0=1024, kappa=0.7
     olda = onlineldavb.OnlineLDA(vocab, K, D, 1./K, 1./K, 1024., 0.7)
     # Run until we've seen D documents. (Feel free to interrupt *much*
     # sooner than this.)
     perplexity_plot=list()
+    perplexity = []
     for iteration in range(1, documentstoanalyze+1):
         # Download some articles
         (docset, articlenames) = \
@@ -66,7 +67,8 @@ def main(batchnumber = 3.3e4 ):
         # Compute an estimate of held-out perplexity
         #(wordids, wordcts) = onlineldavb.parse_doc_list(docset, olda._vocab)
         perwordbound = bound * len(docset) / (D * sum(map(sum, olda._wordcts)))
-        perplexity_plot.append(numpy.exp(-perwordbound))
+        perplexity = min( perplexity, numpy.exp(-perwordbound))
+        perplexity_plot.append(perplexity)
         print '%d:  rho_t = %f,  held-out perplexity estimate = %f' % \
             (iteration, olda._rhot, numpy.exp(-perwordbound))
 
@@ -79,7 +81,7 @@ def main(batchnumber = 3.3e4 ):
            #numpy.savetxt('gamma-%d.dat' % iteration, olda._gamma)
     
     #print time taken
-    end = time.clock()
+    end = time.time()
     print "time taken for training %f" %end
     #plot perplexity
     plt.plot(range(len(perplexity_plot)), perplexity_plot, 'g')
