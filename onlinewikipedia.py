@@ -54,8 +54,7 @@ def main(batchnumber = 3.3e4 ):
     start = time.time()
     # Initialize the algorithm with alpha=1/K, eta=1/K, tau_0=1024, kappa=0.7
     olda = onlineldavb.OnlineLDA(vocab, K, D, 1./K, 1./K, 1024., 0.7)
-    # Run until we've seen D documents. (Feel free to interrupt *much*
-    # sooner than this.)
+    # Run until we've seen D documents. (Feel free to interrupt *much    # sooner than this.)
     perplexity_plot = list()
     perplexity = []
     time_track = list()
@@ -68,7 +67,10 @@ def main(batchnumber = 3.3e4 ):
         # Compute an estimate of held-out perplexity
         #(wordids, wordcts) = onlineldavb.parse_doc_list(docset, olda._vocab)
         perwordbound = bound * len(docset) / (D * sum(map(sum, olda._wordcts)))
-        perplexity = min(perplexity, numpy.exp(-perwordbound))
+        if iteration == 1 :
+            perplexity = numpy.exp(-perwordbound)
+        else :
+            perplexity = min(perplexity, numpy.exp(-perwordbound))
         perplexity_plot.append(perplexity)
         time_track.append(time.time()-start)
         print '%d:  rho_t = %f,  held-out perplexity estimate = %f' % \
@@ -82,8 +84,9 @@ def main(batchnumber = 3.3e4 ):
     for item in time_track:
         time_track_file.write("%s\n"% item)
     time_track_file.close()
-    print "time taken for training %f" % end
+    print "time taken for training %f" % (end-start)
     #plot perplexity
+    plt.figure(1)
     plt.plot(range(len(perplexity_plot)), perplexity_plot, 'g')
     plt.xlabel('Number of Iterations')
     plt.ylabel('Perplexity')
@@ -91,20 +94,14 @@ def main(batchnumber = 3.3e4 ):
     #plt.pause(100)
     plt.savefig("perplexity%s.png" % batchnumber)
 
-    plt.plot(range(len(perplexity_plot)), time_track, 'g')
+    plt.figure(2)
+    plt.plot(time_track, perplexity_plot, 'g')
     plt.xlabel('Time in seconds')
     plt.ylabel('Perplexity')
     #plt.show()
     #plt.pause(100)
     plt.savefig("time_track%s.png" % batchnumber)
-
-
-    # print topics
-    #printtopics("dictnostops.txt", "lambda-20.dat")
 if __name__ == '__main__':
-    #printtopics.main("dictnostops.txt", "lambda-10.dat")
-
-    main(20)
-
+    #printtopics.main("dictnostops.txt", "lambda.dat")
+    main(875)
     
-
