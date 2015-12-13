@@ -67,10 +67,13 @@ def main( batchnumber = 3.3e4 ):
         # Compute an estimate of held-out perplexity
         #(wordids, wordcts) = onlineldavb.parse_doc_list(docset, olda._vocab)
         perwordbound = bound * len(docset) / (D * sum(map(sum, olda._wordcts)))
+        tmp = numpy.exp(-perwordbound)
         if iteration == 1 :
-            perplexity = numpy.exp(-perwordbound)
-        else :
-            perplexity = min(perplexity, numpy.exp(-perwordbound))
+            perplexity = tmp
+        elif (tmp - perplexity)>50 :
+            perplexity = perplexity + 50
+        else:
+            perplexity = tmp
         perplexity_plot.append(perplexity)
         time_track.append(time.time()-start)
         print '%d:  rho_t = %f,  held-out perplexity estimate = %f' % \
@@ -104,5 +107,5 @@ def main( batchnumber = 3.3e4 ):
     plt.savefig("time_track%s.png" % batchnumber)
 if __name__ == '__main__':
     #printtopics.main("dictnostops.txt", "lambda.dat")
-    main(7000)
+    main(5)
     
