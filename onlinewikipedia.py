@@ -56,8 +56,9 @@ def main(batchnumber = 3.3e4 ):
     olda = onlineldavb.OnlineLDA(vocab, K, D, 1./K, 1./K, 1024., 0.7)
     # Run until we've seen D documents. (Feel free to interrupt *much*
     # sooner than this.)
-    perplexity_plot=list()
+    perplexity_plot = list()
     perplexity = []
+    time_track = list()
     for iteration in range(1, documentstoanalyze+1):
         # Download some articles
         (docset, articlenames) = \
@@ -67,22 +68,21 @@ def main(batchnumber = 3.3e4 ):
         # Compute an estimate of held-out perplexity
         #(wordids, wordcts) = onlineldavb.parse_doc_list(docset, olda._vocab)
         perwordbound = bound * len(docset) / (D * sum(map(sum, olda._wordcts)))
-        perplexity = min( perplexity, numpy.exp(-perwordbound))
+        perplexity = min(perplexity, numpy.exp(-perwordbound))
         perplexity_plot.append(perplexity)
+        time_track.append(time.time()-start)
         print '%d:  rho_t = %f,  held-out perplexity estimate = %f' % \
             (iteration, olda._rhot, numpy.exp(-perwordbound))
+            
+    numpy.savetxt('lambda.dat', olda._lambda)
 
-        # Save lambda, the parameters to the variational distributions
-        # over topics, and gamma, the parameters to the variational
-        # distributions over topic weights for the articles analyzed in
-        # the last iteration.
-        if (iteration % 10 == 0):
-            numpy.savetxt('lambda.dat', olda._lambda)
-           #numpy.savetxt('gamma-%d.dat' % iteration, olda._gamma)
-    
-    #print time taken
+    #print time taken, save time to file
     end = time.time()
-    print "time taken for training %f" %end
+    time_track_file = open("time_track.txt","w")
+    for item in time_track:
+        time_track_file.write("%s\n"% item)
+    time_track_file.close()
+    print "time taken for training %f" % end
     #plot perplexity
     plt.plot(range(len(perplexity_plot)), perplexity_plot, 'g')
     plt.xlabel('Number of Iterations')
@@ -90,10 +90,21 @@ def main(batchnumber = 3.3e4 ):
     #plt.show()
     #plt.pause(100)
     plt.savefig("perplexity%s.png" % batchnumber)
+
+    plt.plot(range(len(perplexity_plot)), time_track, 'g')
+    plt.xlabel('Time in seconds')
+    plt.ylabel('Perplexity')
+    #plt.show()
+    #plt.pause(100)
+    plt.savefig("time_track%s.png" % batchnumber)
+
+
     # print topics
     #printtopics("dictnostops.txt", "lambda-20.dat")
 if __name__ == '__main__':
     #printtopics.main("dictnostops.txt", "lambda-10.dat")
-    main(200)
+
+    main(20)
+
     
 
