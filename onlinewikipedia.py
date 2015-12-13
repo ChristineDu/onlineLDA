@@ -106,5 +106,5 @@ def main(batchnumber = 3.3e4 ):
     plt.savefig("time_track%s.png" % batchnumber)
 if __name__ == '__main__':
     #printtopics.main("dictnostops.txt", "lambda.dat")
-    main(875)
+    main(5)
     
