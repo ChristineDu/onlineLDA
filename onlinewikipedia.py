@@ -87,6 +87,12 @@ def main( batchnumber = 3.3e4 ):
     for item in time_track:
         time_track_file.write("%s\n"% item)
     time_track_file.close()
+
+    perplexity_file = open("perplexity.txt","w")
+    for per in perplexity_plot:
+        perplexity_file.write("%s\n"% per)
+    perplexity_file.close()
+
     print "time taken for training %f" % (end-start)
     print perplexity_plot
     #plot perplexity
@@ -107,5 +113,5 @@ def main( batchnumber = 3.3e4 ):
     plt.savefig("time_track%s.png" % batchnumber)
 if __name__ == '__main__':
     #printtopics.main("dictnostops.txt", "lambda.dat")
-    main(5)
+    main(16000)
     
