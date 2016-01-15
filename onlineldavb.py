@@ -1,20 +1,7 @@
 # onlineldavb.py: Package of functions for fitting Latent Dirichlet
-# Allocation (LDA) with online variational Bayes (VB).
+# Allocation (LDA) with online variational Bayes (VB) in parallel.
 #
-# Copyright (C) 2010  Matthew D. Hoffman
-#
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 
 import sys, re, time, string, threading
 import numpy as n
@@ -310,13 +297,6 @@ class OnlineLDA:
                 tmax = max(temp)
                 phinorm[i] = n.log(sum(n.exp(temp - tmax))) + tmax
             score += n.sum(cts * phinorm)
-#             oldphinorm = phinorm
-#             phinorm = n.dot(expElogtheta[d, :], self._expElogbeta[:, ids])
-#             print oldphinorm
-#             print n.log(phinorm)
-#             score += n.sum(cts * n.log(phinorm))
-
-        # E[log p(theta | alpha) - log q(theta | gamma)]
         score += n.sum((self._alpha - self._gamma)*Elogtheta)
         score += n.sum(gammaln(self._gamma) - gammaln(self._alpha))
         score += sum(gammaln(self._alpha*self._K) - gammaln(n.sum(self._gamma, 1)))
